@@ -1,0 +1,83 @@
+{
+    "name": "midhun/laravel-git-console",
+    "version": "v0.0.1",
+    "description": "Laravel Git Console is a Laravel package providing a terminal UI for Git and Git Flow commands. It simplifies branch, release, and hotfix management, adhering to the Git Flow workflow. Ideal for both Git beginners and seasoned users.",
+    "keywords": [
+        "Midhun Monachan",
+        "midhunmonachan",
+        "midhun",
+        "laravel",
+        "laravel-package",
+        "laravel-git-console"
+    ],
+    "homepage": "https://github.com/midhunmonachan/laravel-git-console",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Midhun Monachan",
+            "email": "mail@midhun.ca",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "spatie/laravel-package-tools": "^1.16.4",
+        "illuminate/contracts": "^10.0||^11.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.16",
+        "nunomaduro/collision": "^8.1.1||^7.10.0",
+        "larastan/larastan": "^2.9.7",
+        "orchestra/testbench": "^9.1.2||^8.22.0",
+        "pestphp/pest": "^2.34.8",
+        "pestphp/pest-plugin-arch": "^2.7",
+        "pestphp/pest-plugin-laravel": "^2.4",
+        "phpstan/extension-installer": "^1.4.1",
+        "phpstan/phpstan-deprecation-rules": "^1.2",
+        "phpstan/phpstan-phpunit": "^1.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Midhun\\GitConsole\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Midhun\\GitConsole\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@composer run prepare",
+        "clear": "@php vendor/bin/testbench package:purge-laravel-git-console --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": [
+            "@composer run prepare",
+            "@php vendor/bin/testbench workbench:build --ansi"
+        ],
+        "start": [
+            "Composer\\Config::disableProcessTimeout",
+            "@composer run build",
+            "@php vendor/bin/testbench serve"
+        ],
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Midhun\\GitConsole\\GitConsoleServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

@@ -1,0 +1,51 @@
+name: Code Static Analysis
+
+on:
+  push:
+    paths:
+      - '**.php'
+      - 'phpstan.neon.dist'
+      - '.github/workflows/phpstan.yml'
+
+jobs:
+  phpstan:
+    name: "PHPStan"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest]
+        php: [8.3]
+        laravel: [11.*]
+        stability: [prefer-stable]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.stability }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            restore-keys: ${{ runner.os }}-composer-${{ matrix.stability }}-
+
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+
+      - name: Run PHPStan
+        run: ./vendor/bin/phpstan --error-format=github
